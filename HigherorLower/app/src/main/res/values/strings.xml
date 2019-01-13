@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Higher or Lower</string>
+    <string name="introText">I am thinking about a number between 1 and 20</string>
+    <string name="questionText">Can you quess it?</string>
+    <string name="guessText">Guess!</string>
+    <string name="numberText">type a number</string>
+</resources>
