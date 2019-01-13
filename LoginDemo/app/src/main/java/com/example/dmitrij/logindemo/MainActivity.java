@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i ("status", "User " + loginEditText.getText().toString() + " has logged in");
 
+        Toast.makeText(this, "Hi there!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
