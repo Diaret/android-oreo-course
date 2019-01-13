@@ -1,4 +1,4 @@
-package com.example.dmitrij.interactivitydemo;
+package com.example.dmitrij.logindemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +8,14 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void clickFunction(View view){
-        EditText nameEditText = (EditText) findViewById(R.id.nameEditText);
-        Log.i("info", "It worked fine!");
+    public void clickFunction (View view){
+        Log.i ("info", "Button is pressed");
 
-        Log.i( "values", nameEditText.getText().toString());
+        EditText loginEditText = (EditText) findViewById(R.id.loginEditText);
+        EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
+
+        Log.i ("status", "User " + loginEditText.getText().toString() + " has logged in");
+
     }
 
     @Override
