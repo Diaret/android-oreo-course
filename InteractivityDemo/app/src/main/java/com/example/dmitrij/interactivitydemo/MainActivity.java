@@ -1,4 +1,4 @@
-package com.myappcompany.rob.exampleapp;
+package com.example.dmitrij.interactivitydemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,9 +7,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void clickFunction(View view) {
-        Log.i( "info", "Button is pressed!" );
-
+    public void clickFunction(View view){
+        Log.i("info", "It worked fine!");
     }
 
     @Override
