@@ -11,20 +11,19 @@ public class MainActivity extends AppCompatActivity {
         Log.i ("info","Image is tapped");
 
         ImageView bartImageView = findViewById(R.id.bartImageView);
-        ImageView homerImageView = findViewById(R.id.homerImageView);
-
-        if (bartImageView.getAlpha() == 0){
-            bartImageView.animate().alpha(1).setDuration(2000);
-            homerImageView.animate().alpha(0).setDuration(2000);
-        } else {
-            bartImageView.animate().alpha(0).setDuration(2000);
-            homerImageView.animate().alpha(1).setDuration(2000);
-        }
+       // bartImageView.animate().translationXBy(-1000).setDuration(2000);
+        //bartImageView.animate().rotation(1000).alpha(0).setDuration(1000);
+        bartImageView.animate().scaleX(0.5f).setDuration(1000);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageView bartImageView = findViewById(R.id.bartImageView);
+        bartImageView.setX(-1000);
+        bartImageView.animate().translationXBy(1000).rotation(360*5).setDuration(1000);
+
     }
 }
