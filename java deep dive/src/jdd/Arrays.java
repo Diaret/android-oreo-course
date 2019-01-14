@@ -36,7 +36,6 @@ public class Arrays {
 		Map map = new HashMap();
 		map.put("Father", "Rob");
 		System.out.println(map.get("Father"));
-		
 	}
 
 }
