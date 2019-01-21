@@ -1,17 +1,22 @@
 package com.example.braintrainer;
 
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private static int questionNumber = 5;
+    private static int questionsNumber = 10;
     private static int answersPerQuestion = 4;
+    private static int secondsPerTurn = 5;
+    private static long countDownInterval = 1000;
 
     /**
      * Returns a pseudo-random number between min and max, inclusive.
@@ -35,47 +40,75 @@ public class MainActivity extends AppCompatActivity {
         // In particular, do NOT do 'Random rand = new Random()' here or you
         // will get not very good / not very random results.
         Random rand = new Random();
-
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
+        return rand.nextInt((max - min) + 1) + min;
+    }
 
-        return randomNum;
+    void setViewsVisibility(int goButtonVisibility, int otherViewsVisibility) {
+        goButton.setVisibility(goButtonVisibility);
+
+        b1.setVisibility(otherViewsVisibility);
+        b2.setVisibility(otherViewsVisibility);
+        b3.setVisibility(otherViewsVisibility);
+        b4.setVisibility(otherViewsVisibility);
+
+        counterTextView.setVisibility(otherViewsVisibility);
+        taskTextView.setVisibility(otherViewsVisibility);
+        resultTextView.setVisibility(otherViewsVisibility);
     }
 
     Game game;
     Button goButton, b1, b2, b3, b4;
-    TextView counterTextView, taskTextView, resultTextView;
+    TextView counterTextView, taskTextView, resultTextView, msgTextView;
+    CountDownTimer countDownTimer;
 
     class Game {
-        private boolean isGameActive = true;
-        private int currentTurn = 0;
-        private int secondsPerTurn = 15;
-        private int correctlyAnsweredQuestionsNumber = 0;
-
+        private int currentTurn;
+        private int correctlyAnsweredQuestionsNumber;
         private ArrayList<Question> questions;
-        private int questionsNumber;
+        private boolean isTimerActive;
 
         //Constructor
-        public Game(int questionsNumber) {
-            this.isGameActive = true;
-            this.questionsNumber = questionsNumber;
+        Game(int questionsNumber) {
+            this.isTimerActive = false;
             this.currentTurn = 0;
-            questions = new ArrayList<Question>();
-            for (int i = 0; i < this.questionsNumber; i++) {
+            this.correctlyAnsweredQuestionsNumber = 0;
+            questions = new ArrayList<>();
+            for (int i = 0; i < questionsNumber; i++) {
                 questions.add(new Question(answersPerQuestion));
             }
-            goButton.setVisibility(View.INVISIBLE);
+            msgTextView.setText("");
+            setViewsVisibility(View.INVISIBLE, View.VISIBLE);
+            setText();
+            startTimer();
+        }
 
-            b1.setVisibility(View.VISIBLE);
-            b2.setVisibility(View.VISIBLE);
-            b3.setVisibility(View.VISIBLE);
-            b4.setVisibility(View.VISIBLE);
+        private void startTimer(){
+            cancelTimer();
+            //Start the timer
+            countDownTimer = new CountDownTimer(secondsPerTurn * 1000, countDownInterval) {
+                public void onTick(long millisecondsUntilDone) {
+                    Log.i("Seconds left!", String.valueOf(millisecondsUntilDone / 1000));
+                    counterTextView.setText(String.valueOf(millisecondsUntilDone / 1000)+"s");
+                }
 
-            counterTextView.setVisibility(View.VISIBLE);
-            taskTextView.setVisibility(View.VISIBLE);
-            resultTextView.setVisibility(View.VISIBLE);
+                public void onFinish() {
+                    Log.i("We're done!", "No more countdown");
+                    nextTurn();
+                }
+            }.start();
+            this.isTimerActive = true;
+        }
 
+        private void cancelTimer(){
+            if (this.isTimerActive) {
+                countDownTimer.cancel();
+                isTimerActive = false;
+            }
+        }
+
+        private void setText() {
             b1.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[0]));
             b2.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[1]));
             b3.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[2]));
@@ -87,71 +120,52 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //returns a string with current score
-        public String getCurrentScore() {
+        String getCurrentScore() {
             return String.valueOf(correctlyAnsweredQuestionsNumber) + "/" + String.valueOf(questionsNumber);
         }
 
-        public boolean isAnswerCorrect(int tag){
+        boolean isAnswerCorrect(int tag){
             return questions.get(this.currentTurn).isCorrect(tag);
         }
 
-        public void nextTurn(){
+        void nextTurn(){
             currentTurn++;
-            if (currentTurn == questionNumber){
-                restartGame();
+            if (currentTurn == questionsNumber){
+                setViewsVisibility(View.VISIBLE, View.INVISIBLE);
+                cancelTimer();
+                Toast.makeText(getApplicationContext(), "Your result is " + getCurrentScore(), Toast.LENGTH_LONG).show();
+                msgTextView.setText(getCurrentScore());
+                msgTextView.animate().alpha(1).setDuration(2000);
                 return;
             }
-            b1.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[0]));
-            b2.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[1]));
-            b3.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[2]));
-            b4.setText(String.valueOf(questions.get(currentTurn).getPossibleAnswers()[3]));
-
-            counterTextView.setText(String.valueOf(secondsPerTurn)+"s");
-            taskTextView.setText(questions.get(currentTurn).getTaskText());
+            setText();
+            startTimer();
         }
 
-        public void addToCorrect(){
+        void addToCorrect(){
             correctlyAnsweredQuestionsNumber++;
             resultTextView.setText(this.getCurrentScore());
-        }
-
-        public void restartGame(){
-            goButton.setVisibility(View.VISIBLE);
-
-            b1.setVisibility(View.INVISIBLE);
-            b2.setVisibility(View.INVISIBLE);
-            b3.setVisibility(View.INVISIBLE);
-            b4.setVisibility(View.INVISIBLE);
-
-            counterTextView.setVisibility(View.INVISIBLE);
-            taskTextView.setVisibility(View.INVISIBLE);
-            resultTextView.setVisibility(View.INVISIBLE);
         }
 
     }
 
     class Question {
-        private int answersNum = 4;
         private int min = 1, max = 100;
         private int a, b, answerVal, answerPos;
         private String operationType = "+";
         private String question;
         int[] answers;
 
-        public String getTaskText(){
-            return String.valueOf(a) + " " + operationType + " " + String.valueOf(b);
+        String getTaskText(){
+            return question;
         }
 
-        public int getAnswerVal() {
-            return answerVal;
-        }
-
-        public int[] getPossibleAnswers(){
+        int[] getPossibleAnswers(){
             return answers;
         }
 
         //constructor, answerNum - number of randomly generated answers
-        public Question(int answersNum) {
+        Question(int answersNum) {
             answers = new int[answersNum];
             a = randInt(min, max);
             b = randInt(min, max);
@@ -170,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //check whether the answer in a specific position (posNumber) is correct
-        public boolean isCorrect(int posNumber) {
+        boolean isCorrect(int posNumber) {
             return posNumber == answerPos;
         }
     }
@@ -191,30 +205,27 @@ public class MainActivity extends AppCompatActivity {
         taskTextView = findViewById(R.id.taskTextView);
         resultTextView = findViewById(R.id.resultTextView);
 
-        goButton.setVisibility(View.VISIBLE);
+        msgTextView = (TextView) findViewById(R.id.msgTextView);
 
-        b1.setVisibility(View.INVISIBLE);
-        b2.setVisibility(View.INVISIBLE);
-        b3.setVisibility(View.INVISIBLE);
-        b4.setVisibility(View.INVISIBLE);
-
-        counterTextView.setVisibility(View.INVISIBLE);
-        taskTextView.setVisibility(View.INVISIBLE);
-        resultTextView.setVisibility(View.INVISIBLE);
+        setViewsVisibility(View.VISIBLE, View.INVISIBLE);
 
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                game = new Game(questionNumber);
+                game = new Game(questionsNumber);
             }
         });
     }
 
-    public void onClick(View view){
+    public void onClick(View view) {
         if (game.isAnswerCorrect(Integer.valueOf(String.valueOf(view.getTag())))){
             game.addToCorrect();
+            msgTextView.setText("Correct");
+        } else{
+            msgTextView.setText("Incorrect");
         }
-
+        msgTextView.setAlpha(1);
+        msgTextView.animate().alpha(0).setDuration(2000);
         game.nextTurn();
     }
 
