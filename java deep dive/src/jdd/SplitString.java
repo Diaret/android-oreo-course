@@ -23,6 +23,11 @@ public class SplitString {
 			System.out.println(m.group(1));
 		}
 		
+		String s = "ABCDEFGHIJK";
+		int index = s.indexOf('H');
+		System.out.println(index);
+		
+		
 	}
 
 }
