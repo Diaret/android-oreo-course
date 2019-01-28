@@ -19,9 +19,9 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        //Intent intent = getIntent();
+//        Intent intent = getIntent();
 //        int age = intent.getIntExtra("age", 0);
-        //Toast.makeText(getApplicationContext(), Integer.toString(age), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), Integer.toString(age), Toast.LENGTH_SHORT).show();
 
         Intent intent = getIntent();
         String friendName = intent.getStringExtra("friendName");
