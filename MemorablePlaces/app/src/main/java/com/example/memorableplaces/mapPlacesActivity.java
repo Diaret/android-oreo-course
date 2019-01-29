@@ -1,6 +1,7 @@
 package com.example.memorableplaces;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -63,9 +64,10 @@ public class mapPlacesActivity extends FragmentActivity implements OnMapReadyCal
         lm = (LocationManager) getSystemService(getApplicationContext().LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        } else{
+        } else {
             location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         }
+
     }
 
 
@@ -81,28 +83,39 @@ public class mapPlacesActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+        LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(current).title(getString(R.string.currentPlace)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,latLngZoomValue));
 
+        for (PlaceInfo placeInfo : placeInfoArrayList
+        ) {
+            mMap.addMarker(new MarkerOptions().position(placeInfo.getLatLng()).title(placeInfo.getPlace()));
+        }
+
+        Intent intent = getIntent();
+        int position = intent.getIntExtra(getString(R.string.placeNumber), 0);
+
+        if (position != 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeInfoArrayList.get(position).getLatLng(), latLngZoomValue));
+        }
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                String placeName = "";
                 try {
-                    String placeName = "";
                     List<Address> listAddresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                    if (listAddresses.get(0).getLocality() != null){
-                        placeName = listAddresses.get(0).getLocality()+" ";
+                    if (listAddresses.get(0).getLocality() != null) {
+                        placeName = listAddresses.get(0).getLocality() + " ";
                     }
-                    if (listAddresses.get(0).getThoroughfare() != null){
+                    if (listAddresses.get(0).getThoroughfare() != null) {
                         placeName += listAddresses.get(0).getThoroughfare();
                     }
                     placeInfoArrayList.add(new PlaceInfo(placeName, latLng));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(getApplicationContext(),getString(R.string.locationAdded), Toast.LENGTH_LONG).show();
+                mMap.addMarker(new MarkerOptions().position(latLng).title(placeName));
+                Toast.makeText(getApplicationContext(), getString(R.string.locationAdded), Toast.LENGTH_LONG).show();
             }
         });
     }
