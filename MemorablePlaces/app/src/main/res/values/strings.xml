@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Memorable Places</string>
+    <string name="title_activity_map_places">Map</string>
+    <string name="newPlace">Add a new place</string>
+    <string name="currentPlace">You are here</string>
+    <string name="placeNumber">placeNumber</string>
+    <string name="placeLatitude">placeLatitude</string>
+    <string name="placeLongitude">placeLongitude</string>
+    <string name="locationAdded">Location added!</string>
+</resources>
