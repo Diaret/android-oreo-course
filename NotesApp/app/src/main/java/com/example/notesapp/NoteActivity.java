@@ -27,12 +27,16 @@ public class NoteActivity extends AppCompatActivity {
 
         editTextNote = findViewById(R.id.editTextNote);
 
+        notes = new ArrayList<>();
+
         try {
             notes = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString(getString(R.string.notes), ObjectSerializer.serialize(new ArrayList<String>())));
             position = sharedPreferences.getInt(getString(R.string.notesPosition), 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        editTextNote.setText(notes.get(position));
 
         editTextNote.addTextChangedListener(new TextWatcher() {
             @Override
@@ -50,6 +54,16 @@ public class NoteActivity extends AppCompatActivity {
                 notes.set(position, String.valueOf(editTextNote.getText()));
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            sharedPreferences.edit().putString(getString(R.string.notes), ObjectSerializer.serialize(notes)).apply();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onDestroy() {
