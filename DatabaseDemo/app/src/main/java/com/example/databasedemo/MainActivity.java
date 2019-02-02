@@ -13,28 +13,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SQLiteDatabase myDatabase = this.openOrCreateDatabase("Users", MODE_PRIVATE, null);
+        SQLiteDatabase myDB = this.openOrCreateDatabase("Events", MODE_PRIVATE, null);
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS events (name VARCHAR, year INT(4))");
+        //myDB.execSQL("INSERT INTO events (name, year) VALUES ('Millenium', 2000)");
+        //myDB.execSQL("INSERT INTO events (name, year) VALUES ('Nick started teaching', 2014)");
 
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS users (name VARCHAR, age INT(3))");
-        //myDatabase.execSQL("INSERT INTO users (name, age) VALUES ('Nick', 28)");
-        //myDatabase.execSQL("INSERT INTO users (name, age) VALUES ('Marta', 32)");
-
-        Cursor c = myDatabase.rawQuery("SELECT * FROM users", null);
-        int nameIndex = c.getColumnIndex("name");
-        int ageIndex = c.getColumnIndex("age");
-
-//        c.moveToFirst();
-//
-//        while (c!=null){
-//            Log.i("name", c.getString(nameIndex));
-//            Log.i("age", c.getString(ageIndex));
-//
-//            c.moveToNext();
-//        }
-
-        Cursor c2 = (Cursor) myDatabase.query("users", null, String.valueOf(new String[] {"AVG(age)"}),null,null, null, null);
-        c2.moveToFirst();
-        Log.i("avg", String.valueOf(c.getInt(0)));
+        Cursor cursor = myDB.rawQuery("SELECT * FROM events", null);
+        int nameIndex = cursor.getColumnIndex("name");
+        int yearIndex = cursor.getColumnIndex("year");
+        cursor.moveToFirst();
+        while (cursor!=null){
+            Log.i("name", cursor.getString(nameIndex));
+            Log.i("year", String.valueOf(cursor.getInt(yearIndex)));
+            cursor.moveToNext();
+        }
 
 
     }
