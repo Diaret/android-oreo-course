@@ -1,24 +1,21 @@
 package com.example.notesapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
-import android.view.WindowInsets;
 import android.widget.EditText;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class NoteActivity extends AppCompatActivity {
-    EditText editTextNote;
-    ArrayList<String> notes;
-    SharedPreferences sharedPreferences;
-    int position;
+    private EditText editTextNote;
+    private ArrayList<String> notes;
+    private SharedPreferences sharedPreferences;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +45,13 @@ public class NoteActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void initializeScreen() {
         sharedPreferences = this.getSharedPreferences("com.example.notesapp", Context.MODE_PRIVATE);
 
         try {
             notes = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString(getString(R.string.notes), ObjectSerializer.serialize(new ArrayList<String>())));
-            position = (Integer) sharedPreferences.getInt(getString(R.string.notesPosition), 0);
+            position = sharedPreferences.getInt(getString(R.string.notesPosition), 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
