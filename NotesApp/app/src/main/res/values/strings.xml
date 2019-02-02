@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Notes App</string>
+    <string name="addNote">Add note</string>
+    <string name="exampleNote">Example Note...</string>
+    <string name="notesPosition">notesPosition</string>
+    <string name="notes">notes</string>
+    <string name="alertTitle">Note deletion</string>
+    <string name="alertMessage">Are you sure you want to delete this note?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="empty"></string>
+</resources>
