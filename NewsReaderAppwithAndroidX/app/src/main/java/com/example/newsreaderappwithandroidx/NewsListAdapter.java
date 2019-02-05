@@ -1,6 +1,7 @@
 package com.example.newsreaderappwithandroidx;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "Element " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "Element " + titleTextView.getText(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
