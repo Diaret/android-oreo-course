@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -23,6 +24,7 @@ import java.util.List;
  */
 public class NewsList extends Fragment {
     RecyclerView recyclerView;
+    int[] newsIds;
 
     private NewsViewModel mNewsViewModel;
 
@@ -59,4 +61,5 @@ public class NewsList extends Fragment {
             }
         });
     }
+
 }
